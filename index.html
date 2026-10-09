@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halo</title>
+<style>
+body{font-family:sans-serif;text-align:center;padding:2rem;background:#12202b;color:#fff}
+button{font-size:1.2rem;padding:.8rem 1.4rem;margin-top:1rem}
+</style>
+</head>
+<body>
+<h1>Halo!</h1>
+<p>Knowledge Arena - APK percobaan</p>
+<p>Versi: 1</p>
+<p>Skor tes: <b id="skor">0</b></p>
+<button id="tambah">Tambah skor</button>
+<script>
+let skor = 0;
+try { skor = Number(localStorage.getItem("skor-tes")) || 0; } catch (e) {}
+const el = document.getElementById("skor");
+el.textContent = skor;
+document.getElementById("tambah").onclick = () => {
+  skor++;
+  el.textContent = skor;
+  try { localStorage.setItem("skor-tes", String(skor)); } catch (e) {}
+};
+</script>
+</body>
+</html>
