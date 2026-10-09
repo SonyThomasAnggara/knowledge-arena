@@ -1,0 +1,46 @@
+name: Bangun APK  
+  
+on:  
+  workflow_dispatch:  
+  
+permissions:  
+  contents: write  
+  
+jobs:  
+  build:  
+    runs-on: ubuntu-latest  
+    timeout-minutes: 30  
+    steps:  
+      - uses: actions/checkout@v4  
+  
+      - uses: actions/setup-node@v4  
+        with:  
+          node-version: 22  
+  
+      - uses: actions/setup-java@v4  
+        with:  
+          distribution: temurin  
+          java-version: 21  
+  
+      - name: Siapkan proyek Android  
+        run: |  
+          mkdir -p www  
+          cp index.html www/index.html  
+          npm init -y  
+          npm install @capacitor/core @capacitor/cli @capacitor/android  
+          npx cap init "Halo" com.knowledgearena.halo --web-dir www  
+          npx cap add android  
+          npx cap sync android  
+  
+      - name: Susun APK  
+        run: |  
+          cd android  
+          chmod +x gradlew  
+          ./gradlew assembleDebug  
+  
+      - name: Terbitkan APK  
+        env:  
+          GH_TOKEN: ${{ github.token }}  
+        run: |  
+          cp android/app/build/outputs/apk/debug/app-debug.apk halo.apk  
+          gh release create "v${{ github.run_number }}" halo.apk --title "APK percobaan ${{ github.run_number }}" --notes "APK percobaan Halo"  
